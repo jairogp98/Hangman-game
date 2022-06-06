@@ -18,7 +18,7 @@ class Hangman:
 
     def guessingTheWord(self,wordChoiced, inputKeyboard, guessValue): # Reading the attempt letter 
 
-        if (inputKeyboard is None):
+        if (inputKeyboard is None): # If the game has just started
             for i in range (0, len(wordChoiced)-1):
                 if (i == 0 or i == len(wordChoiced)-2):
                     if (i == 0):
@@ -111,13 +111,18 @@ class Hangman:
 
         while(True):
             try:
-
+                    
                 if (inputKeyboard is None or inputKeyboard.isalpha()):
+                    if (inputKeyboard != None):
+                        if (len(inputKeyboard)>1 and inputKeyboard != 'EXIT'):
+                            inputKeyboard = input("Enter only one letter please")
+                    
                     guessValue = self.interface(wordChoiced, inputKeyboard, guessValue)
                     if (guessValue == 'WIN' or guessValue == 'LOSE' or inputKeyboard == 'EXIT'):
                         break
 
-                    inputKeyboard = input()         
+                    inputKeyboard = input()
+        
                 else:
                     inputKeyboard = input("You most enter a letter")
             except AssertionError as e:
