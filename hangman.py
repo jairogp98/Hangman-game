@@ -1,4 +1,3 @@
-from ast import While
 from asyncio.windows_events import NULL
 import random
 import os
@@ -8,7 +7,7 @@ class Hangman:
     def __init__(self):
         self.attempts = 10
 
-    def wordGuessed(self,wordChoiced,guessValue): # Validating if the word have been guessed
+    def wordGuessed(self,guessValue): # Validating if the word have been guessed
 
         guessSoFar = ""
 
@@ -84,15 +83,16 @@ class Hangman:
 
         print (finalWord)
         
-        word = self.wordGuessed(wordChoiced, guess) #Validating if already win
+        word = self.wordGuessed(guess) #Validating if already win
         wordLen = len(wordChoiced)
         wordCompare = wordChoiced.replace(wordChoiced[wordLen-1],"")
         wordCompare = wordCompare.strip()
         if (word == wordCompare):
             return 'WIN'
-        else:
+        if (attempts == 0): #You lose if run out of attempts
+            return 'LOSE'
+        else: 
             return guess
-
 
     def setAttempts(self,value):
         self.attempts = value
@@ -109,22 +109,30 @@ class Hangman:
         inputKeyboard = None
         guessValue = []
 
-        while(inputKeyboard != 'EXIT'):
-            if (inputKeyboard != '' or inputKeyboard != ' '):
+        while(True):
+            try:
+
+                if (inputKeyboard is None or inputKeyboard.isalpha()):
                     guessValue = self.interface(wordChoiced, inputKeyboard, guessValue)
-                    if (guessValue == 'WIN' or guessValue == 'LOSE'):
+                    if (guessValue == 'WIN' or guessValue == 'LOSE' or inputKeyboard == 'EXIT'):
                         break
-                    else:
-                        inputKeyboard = input()
-            else:
-                print('Por favor, ingrese una letra valida \n')
-                inputKeyboard = input()
-        
+
+                    inputKeyboard = input()         
+                else:
+                    inputKeyboard = input("You most enter a letter")
+            except AssertionError as e:
+                print (e)
+            except ValueError:
+                print ("Letra por fa")
+
         if (guessValue == 'WIN'):
             os.system("cls")
-            print('YOU HAVE WON!! \n')
+            print('¡¡ YOU HAVE WON !! \n')
             print('The word was: ' + wordChoiced)
-
+        if (guessValue == 'LOSE'):
+            os.system("cls")
+            print('YOU LOSE :( \n')
+            print('The word was: ' + wordChoiced)
 
 
 object = Hangman()
